@@ -2,8 +2,15 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
 
-router.get("/", (req, res) => {
-	res.send("user list");
+router.get("/", async (req, res) => {
+	try {
+		const users = await User.find();
+		console.log(`Found all users! ${users.length} Users`);
+		res.json(users);
+	} catch {
+		console.error("Couldn not find users!");
+		res.status(500);
+	}
 });
 // need to be above dynamic id changes below
 router.get("/new", (req, res) => {
@@ -28,9 +35,9 @@ router.post("/", async (req, res) => {
 
 router
 	.route("/:id")
-	.get((req, res) => {
-		console.log(req.user);
-		res.send(`Get user id ${req.params.id}`);
+	.get(async (req, res) => {
+		const user = await User.findById(req.params.id);
+		res.json(user);
 	})
 	.put((req, res) => {
 		req.params.id;
