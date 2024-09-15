@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const User = require("../models/User");
 
 router.get("/", (req, res) => {
 	res.send("user list");
@@ -9,8 +10,20 @@ router.get("/new", (req, res) => {
 	res.send("user new form");
 });
 
-router.post("/", (req, res) => {
-	res.send("Make a new user");
+//Make a new User
+router.post("/", async (req, res) => {
+	try {
+		// make a new user from request body
+		const newUser = new User(req.body);
+		// save the new user to database
+		const savedUser = await newUser.save();
+		res.status(201).json({
+			message: "user created successfully",
+			user: savedUser,
+		});
+	} catch (error) {
+		res.status(400).json({ error: "Error creating user", details: error });
+	}
 });
 
 router
@@ -27,27 +40,5 @@ router
 		req.params.id;
 		res.send(`Delete user id ${req.params.id}`);
 	});
-
-const users = [{ name: "hanna" }, { name: "Kyle" }];
-// middleware :
-router.param("id", (req, res, next, id) => {
-	req.user = users[id];
-	next();
-});
-
-// router.get("/:id", (req, res) => {
-// 	req.params.id;
-// 	res.send(`Get user id ${req.params.id}`);
-// });
-
-// router.put("/:id", (req, res) => {
-// 	req.params.id;
-// 	res.send(`Update user id ${req.params.id}`);
-// });
-
-// router.delete("/:id", (req, res) => {
-// 	req.params.id;
-// 	res.send(`Delete user id ${req.params.id}`);
-// });
 
 module.exports = router;
