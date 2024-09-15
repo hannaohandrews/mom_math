@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from "react";
-
-import "./App.css";
+import React from "react";
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import Home from "./components/Home.js";
+import Users from "./components/Users.js";
 
 function App() {
-	const [message, setMessage] = useState("");
-
-	useEffect(() => {
-		fetch("http://localhost:8000")
-			.then((res) => res.json())
-			.then((data) => setMessage(data.message));
-	});
 	return (
-		<div className="App">
-			<h1>{message}</h1>
-		</div>
+		<Router>
+			<nav>
+				<Link to="/">Home</Link>
+			</nav>
+			<Routes>
+				<Route path="/" element={<Home />} />
+				<Route path="/users" element={<Users />} />
+			</Routes>
+		</Router>
 	);
 }
 
