@@ -7,6 +7,10 @@ const PORT = 8000;
 app.use(cors());
 app.use(express.json());
 
+const userRouter = require("./routes/users");
+
+app.use("/users", userRouter);
+
 app.get("/", (req, res) => {
 	res.json({ message: "Hello from server!" });
 });
