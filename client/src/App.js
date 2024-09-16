@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import Home from "./components/Home.js";
 
@@ -6,9 +6,6 @@ import UserList from "./components/UserList.js";
 import UserForm from "./components/UserForm.js";
 
 function App() {
-	const [users, setUsers] = useState([]);
-	const [selectedUser, setSelectedUser] = useState(null);
-
 	return (
 		<Router>
 			<nav>

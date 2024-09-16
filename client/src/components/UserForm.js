@@ -1,31 +1,32 @@
-import react, { useEffect, useState } from "react";
+import react, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const UserForm = ({ onUserCreated }) => {
+const UserForm = () => {
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
+	const navigate = useNavigate();
 
-	const handleSubmit = (e) => {
-		const newUser = {
-			name,
-			email,
-		};
+	const handleSubmit = async (event) => {
+		// prevent default form submission behavior
+		event.preventDefault();
 
-		fetch("http://localhost:8000/users", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify(newUser),
-		})
-			.then((response) => {
-				response.json();
-			})
-			.then((data) => {
-				onUserCreated(data.user);
-				setName("");
-				setEmail("");
-			})
-			.catch((error) => console.error("Error creating user"));
+		try {
+			const response = await fetch("http://localhost:8000/users", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ name, email }),
+			});
+			console.log("succesffully made a new user");
+			navigate("/usersList");
+
+			if (!response.ok) {
+				throw new Error("bad network");
+			}
+		} catch (error) {
+			console.error("Error submitting form");
+		}
 	};
 
 	return (

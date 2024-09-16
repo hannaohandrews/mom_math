@@ -12,10 +12,6 @@ router.get("/", async (req, res) => {
 		res.status(500);
 	}
 });
-// need to be above dynamic id changes below
-router.get("/new", (req, res) => {
-	res.send("user new form");
-});
 
 //Make a new User
 router.post("/", async (req, res) => {
@@ -24,6 +20,7 @@ router.post("/", async (req, res) => {
 		const newUser = new User(req.body);
 		// save the new user to database
 		const savedUser = await newUser.save();
+		console.log("do you get here?");
 		res.status(201).json({
 			message: "user created successfully",
 			user: savedUser,
@@ -39,13 +36,27 @@ router
 		const user = await User.findById(req.params.id);
 		res.json(user);
 	})
-	.put((req, res) => {
-		req.params.id;
-		res.send(`Update user id ${req.params.id}`);
+	.put(async (req, res) => {
+		try {
+			const updateUser = await User.findByIdAndUpdate(req.params.id);
+			if (!updateUser) {
+				return res.status(404).json({ message: "User not found" });
+			}
+			res.status(200).json({ message: "User successfully Updated! Woot!" });
+		} catch {
+			console.error("error updating user", error);
+		}
 	})
-	.delete((req, res) => {
-		req.params.id;
-		res.send(`Delete user id ${req.params.id}`);
+	.delete(async (req, res) => {
+		try {
+			const deletingUser = await User.findByIdAndDelete(req.params.id);
+			if (!deletingUser) {
+				return res.status(404).json({ message: "User not found" });
+			}
+			res.status(200).json({ message: "User successfully deleted! Woot!" });
+		} catch {
+			console.error("error deleting user", error);
+		}
 	});
 
 module.exports = router;
